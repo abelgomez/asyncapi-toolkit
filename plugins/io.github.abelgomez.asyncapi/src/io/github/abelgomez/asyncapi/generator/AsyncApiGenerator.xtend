@@ -501,10 +501,17 @@ class AsyncApiGenerator extends AbstractGenerator {
 	'''
 
 	def namedSchemaBuilderMethods(NamedSchema ns, String thisTypeName) '''
+		«IF ns.schema.resolve.type === JsonType.ARRAY»
+		public «thisTypeName»Builder addTo«ns.friendlyClassName»(«ns.schema.resolve.items.resolve.toJavaType» «ns.friendlyIdentifierName»Elt) {
+			this.instance.«ns.friendlyIdentifierName».add(«ns.friendlyIdentifierName»Elt);
+			return this;
+		}
+		«ELSE»
 		public «thisTypeName»Builder with«ns.friendlyClassName»(«ns.toJavaType» «ns.friendlyIdentifierName») {
 			this.instance.«ns.friendlyIdentifierName» = «ns.friendlyIdentifierName»;
 			return this;
 		}
+		«ENDIF»
 	'''
 
 	def namedSchemaGetterMethods(NamedSchema ns, String thisTypeName) '''
@@ -764,7 +771,7 @@ class AsyncApiGenerator extends AbstractGenerator {
 					return "Object";
 				}
 				case JsonType.ARRAY: {
-					return "java.util.List<?>";
+					return "java.util.List<" + schema.items.resolve.toJavaType + ">";
 				}
 			}
 		}
