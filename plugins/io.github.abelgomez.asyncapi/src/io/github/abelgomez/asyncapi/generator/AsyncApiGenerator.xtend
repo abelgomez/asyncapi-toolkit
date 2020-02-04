@@ -497,7 +497,12 @@ class AsyncApiGenerator extends AbstractGenerator {
 		 «ENDIF»
 		 */
 		@SerializedName("«ns.name»")
+		
+		«IF ns.schema.resolve.type === JsonType.ARRAY»
+		private «ns.toJavaType» «ns.friendlyIdentifierName» = new java.util.ArrayList<«ns.schema.resolve.items.resolve.toJavaType»>();
+		«ELSE»
 		private «ns.toJavaType» «ns.friendlyIdentifierName»;
+		«ENDIF»
 	'''
 
 	def namedSchemaBuilderMethods(NamedSchema ns, String thisTypeName) '''
